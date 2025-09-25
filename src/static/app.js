@@ -20,12 +20,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const spotsLeft = details.max_participants - details.participants.length;
 
-        activityCard.innerHTML = `
-          <h4>${name}</h4>
-          <p>${details.description}</p>
-          <p><strong>Schedule:</strong> ${details.schedule}</p>
-          <p><strong>Availability:</strong> ${spotsLeft} spots left</p>
-        `;
+          activityCard.innerHTML = `
+            <h4>${name}</h4>
+            <p>${details.description}</p>
+            <p><strong>Schedule:</strong> ${details.schedule}</p>
+            <p><strong>Availability:</strong> ${spotsLeft} spots left</p>
+            <div class="participants-section">
+              <strong>Participants:</strong>
+              ${
+                details.participants.length > 0
+                  ? `<ul class="participants-list" style="list-style: none; padding-left: 0;">
+                      ${details.participants
+                        .map(
+                          (participant) =>
+                            `<li class="participant-item" style="display: flex; align-items: center;">
+                              <span>${participant}</span>
+                              <span class="delete-icon" title="Remove participant" data-activity="${name}" data-participant="${participant}" style="cursor: pointer; margin-left: 8px; color: #d00; font-weight: bold;">&#10006;</span>
+                            </li>`
+                        )
+                        .join("")}
+                    </ul>`
+                  : `<p class="no-participants">No participants yet.</p>`
+              }
+            </div>
+          `;
 
         activitiesList.appendChild(activityCard);
 
@@ -35,6 +53,26 @@ document.addEventListener("DOMContentLoaded", () => {
         option.textContent = name;
         activitySelect.appendChild(option);
       });
+
+        // Add event listeners for delete icons
+        document.querySelectorAll('.delete-icon').forEach(icon => {
+          icon.addEventListener('click', async (e) => {
+            const activity = icon.getAttribute('data-activity');
+            const participant = icon.getAttribute('data-participant');
+            try {
+              const response = await fetch(`/activities/${encodeURIComponent(activity)}/unregister?email=${encodeURIComponent(participant)}`, {
+                method: 'POST',
+              });
+              if (response.ok) {
+                fetchActivities(); // Refresh list
+              } else {
+                alert('Failed to remove participant.');
+              }
+            } catch (err) {
+              alert('Error removing participant.');
+            }
+          });
+        });
     } catch (error) {
       activitiesList.innerHTML = "<p>Failed to load activities. Please try again later.</p>";
       console.error("Error fetching activities:", error);
@@ -62,6 +100,7 @@ document.addEventListener("DOMContentLoaded", () => {
         messageDiv.textContent = result.message;
         messageDiv.className = "success";
         signupForm.reset();
+        fetchActivities(); // Refresh activities list
       } else {
         messageDiv.textContent = result.detail || "An error occurred";
         messageDiv.className = "error";
