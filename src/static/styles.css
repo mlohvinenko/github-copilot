@@ -94,6 +94,26 @@ section h3 {
   margin-left: 20px;
   margin-bottom: 0;
   padding-left: 0;
+
+  list-style: none;
+  padding-left: 0;
+}
+
+.participant-item {
+  display: flex;
+  align-items: center;
+}
+
+.delete-icon {
+  cursor: pointer;
+  margin-left: 8px;
+  color: #d00;
+  font-weight: bold;
+  transition: color 0.2s;
+}
+
+.delete-icon:hover {
+  color: #a00;
 }
 
 .participant-item {
