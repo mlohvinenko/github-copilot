@@ -26,7 +26,7 @@ activities = {
         "description": "Learn strategies and compete in chess tournaments",
         "schedule": "Fridays, 3:30 PM - 5:00 PM",
         "max_participants": 12,
-        "participants": ["michael@mergington.edu", "daniel@mergington.edu"]
+        "participants": ["michael@mergington.edu", "daniel@mergington.edu", "olivia@mergington.edu"]
     },
     "Gym Class": {
         "description": "Physical education and sports activities",
